@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RingDetector;
 
-@Autonomous(name="Test")
+@Autonomous(name="BlueTest")
 public class Red extends LinearOpMode {
 
     @Override
