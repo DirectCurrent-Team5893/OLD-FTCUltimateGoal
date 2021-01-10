@@ -13,7 +13,10 @@ public class Red extends LinearOpMode {
         RingDetector detector = new RingDetector(this);
 
         waitForStart();
-
-        int rings = detector.getDecision();
+        while(opModeIsActive()) {
+            int rings = detector.getDecision();
+            telemetry.addData("Decision: ", detector.getDecision());
+            telemetry.update();
+        }
     }
 }

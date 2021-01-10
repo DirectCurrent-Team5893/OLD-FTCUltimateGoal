@@ -67,7 +67,7 @@ public class RingDetector {
         if (boxValue < 200) {
             return 4;
         } else if (boxValue < 280){
-            return 4;
+            return 1;
         } else{
             return 0;
         }
@@ -120,7 +120,7 @@ public class RingDetector {
         }
 
         private void sendTelemetry(){
-            opMode.telemetry.addLine("Top :" + " R " + box.getRed() + " G " + box.getGreen() + " B " + box.getBlue() + "Y" + box.getYellow() + "");
+            opMode.telemetry.addData("Top :" + " R " + box.getRed() + " G " + box.getGreen() + " B " + box.getBlue() + "Y" + box.getYellow() + "Decision: ", getDecision() );
             opMode.telemetry.update();
         }
 
