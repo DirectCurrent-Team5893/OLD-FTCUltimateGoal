@@ -1,20 +1,8 @@
 package org.firstinspires.ftc.robotcontroller.internal;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.hardware.rev.RevTouchSensor;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.I2cAddr;
-import com.qualcomm.robotcore.hardware.I2cDevice;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.robot.Robot;
 
 public class HardwareMapper {
     private robotBase base;
@@ -46,9 +34,17 @@ public class HardwareMapper {
     }
     public Servo mapServo(final String NAME){
         Servo temporaryServo;
-        temporaryServo =base.getHardwaremap().servo.get(NAME);
+        temporaryServo = base.getHardwaremap().servo.get(NAME);
 
         return temporaryServo;
     }
+    public GyroSensor mapMRGyro(final String NAME){
+        GyroSensor tempGyro;
+
+        tempGyro = base.getHardwaremap().gyroSensor.get(NAME);
+
+        return tempGyro;
+    }
+
 
 }

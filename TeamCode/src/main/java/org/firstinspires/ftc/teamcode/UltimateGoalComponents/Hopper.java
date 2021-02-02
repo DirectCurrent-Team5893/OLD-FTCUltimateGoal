@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.UltimateGoalComponents;
 
-import android.os.CpuUsageInfo;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -11,7 +7,7 @@ import org.firstinspires.ftc.robotcontroller.internal.RobotComponent;
 import org.firstinspires.ftc.robotcontroller.internal.robotBase;
 
 public class Hopper extends RobotComponent {
-    Servo hopperMover;
+    public Servo hopperMover;
     Servo ringFlicker;
 
     boolean buttonIsHeld  = false;
@@ -19,8 +15,8 @@ public class Hopper extends RobotComponent {
     boolean positionUp = true;
 
     int timeToMoveIn = 500;
-    double OUT_POSITION = .9;
-    double IN_POSITION = 0;
+    double OUT_POSITION = .8;
+    double IN_POSITION = .1;
 
     double initTime;
 
@@ -32,7 +28,7 @@ public class Hopper extends RobotComponent {
         initServo();
     }
     public enum Position { COLLECT_POSITION, TRANSFER_POSITION, INIT_POSITION };
-    public enum flickerPosition{IN_POSITION, OUT_POSITION}
+    public enum flickerPosition{IN_POSITION, OUT_POSITION, INIT_POSITION}
     public void setHopperPosition ( Position targetPositon) {
         switch (targetPositon){
             case COLLECT_POSITION:
@@ -41,7 +37,7 @@ public class Hopper extends RobotComponent {
 
             case INIT_POSITION:
             case TRANSFER_POSITION:
-                hopperMover.setPosition(.83);
+                hopperMover.setPosition(.86);
                 break;
         }
 
@@ -51,7 +47,7 @@ public class Hopper extends RobotComponent {
             case IN_POSITION:
                 ringFlicker.setPosition(IN_POSITION);
                 break;
-
+            case INIT_POSITION:
             case OUT_POSITION:
                 ringFlicker.setPosition(OUT_POSITION);
                 break;
@@ -80,7 +76,7 @@ public class Hopper extends RobotComponent {
             buttonIsHeld = false;
         }
     }
-    public boolean moveFlicker(boolean button, boolean hasHitFirst, ElapsedTime time) {
+    public boolean      moveFlicker(boolean button, boolean hasHitFirst, ElapsedTime time) {
         if((button && !otherButtonIsHeld) || !hasHitFirst) {
             if(otherButtonIsHeld == false) {
                 initTime = time.milliseconds();

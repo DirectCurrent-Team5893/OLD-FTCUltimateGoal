@@ -15,8 +15,13 @@ public class Intake extends RobotComponent {
         flyWheelShooter = base.getMapper().mapMotor("flyWheel");
     }
 
-    public void suck(double power){
+    public void suck(double power, boolean isSpitting){
+        if(!isSpitting)
         flyWheelShooter.setPower(power);
+    }
+    public void spit(double power, boolean isSucking){
+        if(!isSucking)
+        flyWheelShooter.setPower(-power);
     }
     @Override
     public void stop() {

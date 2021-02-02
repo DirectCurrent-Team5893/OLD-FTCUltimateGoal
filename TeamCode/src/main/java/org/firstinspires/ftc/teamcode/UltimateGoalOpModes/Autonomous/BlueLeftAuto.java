@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.FullBase;
 import org.firstinspires.ftc.teamcode.RingDetector;
+import org.firstinspires.ftc.teamcode.UltimateGoalComponents.Drivetrain;
 
 @Autonomous(name="BlueAuto")
 public class BlueLeftAuto extends LinearOpMode {
@@ -17,7 +18,7 @@ public class BlueLeftAuto extends LinearOpMode {
         @Override
         public void runOpMode() {
             RingDetector detector = new RingDetector(this);
-            Base = new FullBase(telemetry, this, hardwareMap);
+            Base = new FullBase(telemetry, this, hardwareMap, true);
             telemetry.addData("Status", "Initialized");
             telemetry.update();
             Base.init();
@@ -26,19 +27,61 @@ public class BlueLeftAuto extends LinearOpMode {
             telemetry.addData("Decision:", decision);
             telemetry.update();
             waitForStart();
+            decision = 4;
             switch (decision) {
+
                 case 1:
                     Base.drivetrain.driveToSecondBox();
+                    Base.debugWait();
+                    Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
+                    Base.debugWait();
+                    Base.shootShots();
+                    Base.debugWait();
+                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ONE);
+
+//                    Base.drivetrain.lineUpWithLine();
+//                    debugWait();
+//                    Base.shootPowerShots();
+//                    Base.debugWait();
+//                    Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);
+//                    Base.debugWait();
+//                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ONE);
                     break;
 
                 case 4:
                     Base.drivetrain.driveToThirdBox();
+                    Base.debugWait();
+                    Base.depositWobble(FullBase.numOfRings.FOUR, FullBase.wobbleNumber.FIRST);
+                    Base.debugWait();
+//                    Base.drivetrain.lineUpWithLine();
+//                    debugWait();
+
+                    Base.shootShots();
+                    Base.debugWait();
+                    //Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);
+                    Base.debugWait();
+                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.FOUR);
                     break;
 
                 case 0:
-                default:
-                    Base.drivetrain.driveToFirstBox();
+
+                     Base.drivetrain.driveToFirstBox();
+                     Base.debugWait();
+                     Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.FIRST);
+                     Base.debugWait();
+//                    Base.drivetrain.lineUpWithLine();
+//                    debugWait();
+//                    Base.shootPowerShots();
+                    Base.debugTelemetery("Shoot Shots");
+                    Base.shootShots();
+                    Base.debugWait();
+//                    Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.SECOND);
+//                    Base.debugWait();
+                    Base.debugTelemetery("Park");
+                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ZERO);
                     break;
+                default:
+                    Base.shootShots();
             }
         }
 }

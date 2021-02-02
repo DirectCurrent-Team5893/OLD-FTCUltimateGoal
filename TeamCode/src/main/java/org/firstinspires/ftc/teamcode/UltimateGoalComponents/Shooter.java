@@ -27,7 +27,21 @@ public class Shooter extends RobotComponent {
     }
     public void shoot(boolean button){
         if(button)
-        getToTargetSpeed(1);
+        getToTargetSpeed(1.0 );
+    }
+
+
+    public void getToTargetSpeed(int target_rpm){
+//        double percentOfTotal = (double)(target_rpm)/6000;
+       ShooterWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        ShooterWheel.setPower(percentOfTotal);
+      if(target_rpm>5900)
+      {
+          ShooterWheel.setPower(1.0);
+      } else
+      {
+          ShooterWheel.setPower(.9);
+      }
     }
 
     public void getToTargetSpeed(double target_speed) {

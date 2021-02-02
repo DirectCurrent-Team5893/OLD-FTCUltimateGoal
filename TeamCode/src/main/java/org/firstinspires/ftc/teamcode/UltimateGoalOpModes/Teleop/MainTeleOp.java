@@ -12,10 +12,12 @@ public class MainTeleOp extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
     FullBase Base ;
     boolean flickerPositon =true;
-
+    int speed = 8000;
+    boolean dpadUpHeld = false;
+    boolean dpadDownHeld = false;
     @Override
     public void runOpMode() {
-        Base = new FullBase(telemetry,this, hardwareMap);
+        Base = new FullBase(telemetry,this, hardwareMap, true);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         Base.init();
@@ -27,13 +29,30 @@ public class MainTeleOp extends LinearOpMode {
             double turn = gamepad1.right_stick_x;
             Base.drivetrain.drive(forward,right,turn);
 
-            Base.hopper.moveHopperInTeleop(gamepad1.a);
+            Base.hopper.moveHopperInTeleop(gamepad2.a);
 
-            flickerPositon = Base.hopper.moveFlicker(gamepad1.b, flickerPositon, runtime);
+            flickerPositon = Base.hopper.moveFlicker(gamepad2.b, flickerPositon, runtime);
+            if(Base.hopper.hopperMover.getPosition() != 0.86)
+            {
+            Base.intake.suck(gamepad1.right_trigger,Math.abs(gamepad1.left_trigger)>.1);
+            }
+            Base.intake.spit(gamepad1.left_trigger,Math.abs(gamepad1.right_trigger)>.1);
+            if(gamepad2.right_bumper) Base.shooter.getToTargetSpeed(speed);
+            //Base.shooter.shoot(gamepad1.x);
+            if(gamepad2.dpad_up && !dpadUpHeld){ speed = 6100; dpadUpHeld = true;}
+            if(!gamepad2.dpad_up) dpadUpHeld = false;
+            if(gamepad2.dpad_down && !dpadDownHeld){ speed = 5900; dpadDownHeld = true;}
+            if(!gamepad2.dpad_down) dpadDownHeld = false;
+            if(gamepad1.dpad_right){Base.wobbleArm.wobbleArm.setPower(.2);}
+            else if(gamepad1.dpad_left){Base.wobbleArm.wobbleArm.setPower(-.2);}
+            else {Base.wobbleArm.wobbleArm.setPower(0);}
+            Base.wobbleArm.moveClaspInTeleop(gamepad1.left_bumper);
 
-            Base.intake.suck(gamepad1.left_trigger);
-            Base.shooter.shoot(gamepad1.x);
-            Base.shooter.stop(gamepad1.y);
+
+            Base.getTelemetry().addLine("Speed: " + speed);
+            Base.getTelemetry().addData("Shooter Encoders:",Base.shooter.ShooterWheel.getCurrentPosition());
+            Base.getTelemetry().update();
+            Base.shooter.stop(gamepad2.left_bumper);
         }
     }
 }
