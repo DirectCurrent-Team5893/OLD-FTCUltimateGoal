@@ -43,7 +43,7 @@ public class Drivetrain extends RobotComponent {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    public static final double DRIVE_SPEED = 0.6;     // Nominal speed for better accuracy.
+    public static final double DRIVE_SPEED = 0.5;     // Nominal speed for better accuracy.
     public static final double TURN_SPEED = 0.5;     // Nominal half speed for better accuracy.
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
@@ -616,14 +616,15 @@ public class Drivetrain extends RobotComponent {
 
     public void driveToSecondBox(){
         final double DIST_TO_LINE = 60;
-        final double DIST_TO_STRAFE = 20;
+        final double DIST_TO_STRAFE = 22;
         this.encoderDrive(DRIVE_SPEED, -DIST_TO_STRAFE, DIST_TO_STRAFE, DIST_TO_STRAFE, -DIST_TO_STRAFE, 0);
         this.gyroDrive(DRIVE_SPEED, DIST_TO_LINE, DIST_TO_LINE, DIST_TO_LINE, DIST_TO_LINE, STRAIGHT,0);
         this.encoderDrive(DRIVE_SPEED, DIST_TO_STRAFE, -DIST_TO_STRAFE, -DIST_TO_STRAFE, DIST_TO_STRAFE, 0);
+        this.gyroTurn(TURN_SPEED, 0);
     }
     public void driveToThirdBox(){
-        double distToThree = 73;
-        double avoidingRings = 20;
+        double distToThree = 80;
+        double avoidingRings = 21;
         this.encoderDrive(DRIVE_SPEED,-avoidingRings,avoidingRings,avoidingRings,-avoidingRings,0);
         this.gyroDrive(DRIVE_SPEED,distToThree,distToThree,distToThree,distToThree,0,0);
         //checkEncoders();

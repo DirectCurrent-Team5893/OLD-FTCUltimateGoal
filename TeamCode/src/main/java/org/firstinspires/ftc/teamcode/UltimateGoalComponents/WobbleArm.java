@@ -74,6 +74,7 @@ public class WobbleArm extends RobotComponent {
             buttonIsHeld = false;
         }
     }
+
     @Override
     public void stop() {
         wobbleArm.setPower(0);

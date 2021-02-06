@@ -108,20 +108,20 @@ public class FullBase extends robotBase {
 //        this.debugTelemetery("Turn around back to wall");
 //        this.opMode.sleep(200);
 //        this.shooter.stop();
-        this.shooter.getToTargetSpeed(5900);
+        this.shooter.getToTargetSpeed(4900);
         this.opMode.sleep(2500);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(500);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(500);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(500);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(500);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(500);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(500);
+        this.opMode.sleep(600);
 
     }
 
@@ -138,7 +138,7 @@ public class FullBase extends robotBase {
             case FIRST:
                 switch(numOfRings){
                     case ZERO:
-                        STRAFE_TO_DEPOSIT = 30.0;
+                        STRAFE_TO_DEPOSIT = 22.0;
                         this.debugTelemetery("Line Up with box", true);
                         this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,-STRAFE_TO_DEPOSIT,STRAFE_TO_DEPOSIT,STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,0);
                         this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,0);
@@ -154,7 +154,7 @@ public class FullBase extends robotBase {
                         break;
                     case ONE:
                         STRAFE_TO_DEPOSIT = 10.0;
-                        DIST_TO_LINE = 20;
+                        DIST_TO_LINE = 16;
                         this.debugTelemetery("Line Up with box", true);
 //                        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,STRAFE_TO_DEPOSIT,0);
                         this.debugTelemetery("Drop Wobble Goal",true);
@@ -166,6 +166,8 @@ public class FullBase extends robotBase {
 
                         this.debugTelemetery("Get back to origin", true);
                         this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,-DIST_TO_LINE,-DIST_TO_LINE,-DIST_TO_LINE,-DIST_TO_LINE, 0, 0);
+                        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED, -2, 2, 2, -2, 0);
+
                         break;
 //                        final double STRAFE_TO_WOBBLE = 12.0;
 //                        final double LINE_UP_TO_SHOOT = -18.0;
@@ -247,6 +249,15 @@ public class FullBase extends robotBase {
 //
 //                }
         }
+    }
+    public void raiseWobbleArm(){
+        this.wobbleArm.wobbleArm.setPower(this.wobbleArm.REVERSE_POWER);
+        this.wobbleArm.lowerClasp.setPosition(0);
+        this.wobbleArm.upperClasp.setPosition(1);
+        this.opMode.sleep(1000);
+        this.wobbleArm.wobbleArm.setPower(0);
+
+
     }
     /**
      * @param timeInMs

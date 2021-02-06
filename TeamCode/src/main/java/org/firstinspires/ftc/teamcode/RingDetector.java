@@ -59,14 +59,15 @@ public class RingDetector {
     }
 
     public int getDecision(){
-        int boxValue = box.getYellow();
+        int boxValue = box.getValueB();
         opMode.telemetry.addData("Value: ", boxValue);
+        //opMode.telemetry.addData("Top :" + " R " + box.getRed() + " G " + box.getGreen() + " B " + box.getBlue() + "Y" + box.getYellow() + "Value A"+ box.getValueA()+ "Value B" + box.getValueB() +"Decision: ", getDecision() );
         opMode.telemetry.update();
         boolean topRing = false;
         boolean bottomRing = false;
-        if (boxValue < 200) {
+        if (boxValue < 50) {
             return 4;
-        } else if (boxValue < 280){
+        } else if (boxValue < 130){
             return 1;
         } else{
             return 0;
@@ -119,8 +120,8 @@ public class RingDetector {
             return new RGBColor(red, green, blue);
         }
 
-        private void sendTelemetry(){
-            opMode.telemetry.addData("Top :" + " R " + box.getRed() + " G " + box.getGreen() + " B " + box.getBlue() + "Y" + box.getYellow() + "Decision: ", getDecision() );
+        public void sendTelemetry(){
+            opMode.telemetry.addData("Top :" + " R " + box.getRed() + " G " + box.getGreen() + " B " + box.getBlue() + "Y" + box.getYellow() + "Value A"+ box.getValueA()+ "Value B" + box.getValueB() +"Decision: ", getDecision() );
             opMode.telemetry.update();
         }
 

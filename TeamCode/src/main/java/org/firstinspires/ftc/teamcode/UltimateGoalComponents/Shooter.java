@@ -38,9 +38,14 @@ public class Shooter extends RobotComponent {
       if(target_rpm>5900)
       {
           ShooterWheel.setPower(1.0);
-      } else
+      } else if(target_rpm == 5900)
       {
           ShooterWheel.setPower(.9);
+      }
+      else if(target_rpm == 4900){
+            ShooterWheel.setPower(.816);
+        } else if (target_rpm == 5100){
+          ShooterWheel.setPower(0.85);
       }
     }
 
