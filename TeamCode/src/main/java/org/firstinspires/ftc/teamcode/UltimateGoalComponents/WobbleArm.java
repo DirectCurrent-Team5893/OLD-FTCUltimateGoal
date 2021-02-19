@@ -11,6 +11,7 @@ public class WobbleArm extends RobotComponent {
 
     public Servo lowerClasp;
     public Servo upperClasp;
+    public Servo rcClasp;
 
 
     public final double POWER = .2;
@@ -29,6 +30,7 @@ public class WobbleArm extends RobotComponent {
         wobbleArm = base.getMapper().mapMotor("wobbleArm");
         upperClasp = base.getMapper().mapServo("clasp");
         lowerClasp = base.getMapper().mapServo("lowerClasp");
+        rcClasp = base.getMapper().mapServo("rcClasp");
     }
     public enum POSITION {OPEN_POSITION, CLOSE_POSITION}
 

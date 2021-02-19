@@ -12,8 +12,6 @@ import org.firstinspires.ftc.teamcode.UltimateGoalComponents.Intake;
 import org.firstinspires.ftc.teamcode.UltimateGoalComponents.Shooter;
 import org.firstinspires.ftc.teamcode.UltimateGoalComponents.WobbleArm;
 
-import static org.firstinspires.ftc.teamcode.UltimateGoalComponents.Drivetrain.TURN_SPEED;
-
 public class FullBase extends robotBase {
     public Drivetrain drivetrain;
     public Hopper hopper;
@@ -24,6 +22,8 @@ public class FullBase extends robotBase {
     public Intake intake;
 
     private RobotComponent[] components = new RobotComponent[5];
+
+    public double rpm = 0;
 
     public FullBase(Telemetry telemetry, LinearOpMode opMode, HardwareMap hardwaremap, boolean debugging) {
         super(telemetry, opMode, hardwaremap,debugging);
@@ -51,6 +51,7 @@ public class FullBase extends robotBase {
         wobbleArm = new WobbleArm(this);
         wobbleArm.upperClasp.setPosition(1);
         wobbleArm.lowerClasp.setPosition(0);
+        wobbleArm.rcClasp.setPosition(.5);
         components[3] = wobbleArm;
 
 
@@ -59,33 +60,36 @@ public class FullBase extends robotBase {
         components[4] = intake;
     }
     public void shootPowerShots(){
-
-        double angle1 = -7, angle2 = -10 , angle3 = -14, angle4 =-180;
-        final int TIME_TO_GO_OUT = 100;
-        this.debugTelemetery("Get to target : Shooter");
-        this.shooter.getToTargetSpeed(5900);
-        this.debugTelemetery("Turn 1");
-        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,angle1);
-        this.debugTelemetery("Shoot One");
+        this.shooter.getToTargetSpeed(3800);
+        this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,-2,-2,-2,-2,0,0);
+        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,0);
+        this.drivetrain.resetEncoders();
+        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,10,-10,-10,10,0,0);
+        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,0,0,0,0,55.9,0,0);
+        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED, -1);
+        this.getUpToSpeed(3800);
+        this.shooter.getToTargetSpeed(3800);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(TIME_TO_GO_OUT);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.debugTelemetery("Turn 2");
-        this.drivetrain.gyroTurn(TURN_SPEED,angle2);
-        this.debugTelemetery("Shoot Two");
+        this.opMode.sleep(600);
+        this.shooter.getToTargetSpeed(3530);
+        this.getUpToSpeed(3530);
+//        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,12,-12,-12,12,0);
+        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED, -4);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(TIME_TO_GO_OUT);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.debugTelemetery("Turn 3");
-        this.drivetrain.gyroTurn(TURN_SPEED,angle3);
-        this.debugTelemetery("Shoot Three");
+        this.opMode.sleep(600);
+        this.getUpToSpeed(3530);
+//        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,12,-12,-12,12,0);
+        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED, -8);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(TIME_TO_GO_OUT);
+        this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.debugTelemetery("Turn around back to wall");
-        this.drivetrain.gyroTurn(TURN_SPEED, angle4);
-
+        this.opMode.sleep(600);
     }
+
     public void shootShots(){
 
 //        final int TIME_TO_GO_OUT = 250;
@@ -108,8 +112,61 @@ public class FullBase extends robotBase {
 //        this.debugTelemetery("Turn around back to wall");
 //        this.opMode.sleep(200);
 //        this.shooter.stop();
-        this.shooter.getToTargetSpeed(4900);
-        this.opMode.sleep(2500);
+        this.shooter.getToTargetSpeed(4165);
+        this.opMode.sleep(3000);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        this.opMode.sleep(600);
+
+    }
+    public void getUpToSpeed(double targetSpeed){
+        do {
+            int initPos = this.shooter.ShooterWheel.getCurrentPosition();
+            this.opMode.sleep(10);
+            int finalPos = this.shooter.ShooterWheel.getCurrentPosition();
+
+            int differenceInPos = finalPos - initPos;
+            double revolutions = differenceInPos / 28;
+            double minutes = 0.00016666666666666666666666;
+            rpm = revolutions / minutes;
+            this.telemetry.addLine("Current RPM: " + rpm);
+        }
+        while(targetSpeed == rpm);
+
+    }
+    public void shootShotsinCaseZero(){
+
+//        final int TIME_TO_GO_OUT = 250;
+//        final int TIME_TO_GET_SPEED = 600;
+//        this.debugTelemetery("Get to target : Shooter");
+//        this.shooter.getToTargetSpeed(5900);
+//        this.debugTelemetery("Shoot One");
+//        this.opMode.sleep(TIME_TO_GET_SPEED);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+//        this.opMode.sleep(TIME_TO_GO_OUT);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+//        this.debugTelemetery("Shoot Two");
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+//        this.opMode.sleep(TIME_TO_GO_OUT);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+//        this.debugTelemetery("Turn 3");
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+//        this.opMode.sleep(TIME_TO_GO_OUT);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+//        this.debugTelemetery("Turn around back to wall");
+//        this.opMode.sleep(200);
+//        this.shooter.stop();
+        this.shooter.getToTargetSpeed(4165);
+        this.opMode.sleep(2900);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
         this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
@@ -149,6 +206,7 @@ public class FullBase extends robotBase {
                         this.wobbleArm.upperClasp.setPosition(0);
                         this.wobbleArm.lowerClasp.setPosition(1);
                         this.debugTelemetery("Get back to origin", true);
+                        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,-2,-2,-2,-2,0, 0 );
                         this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,STRAFE_TO_DEPOSIT,0);
                         this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,0);
                         break;
@@ -186,6 +244,7 @@ public class FullBase extends robotBase {
                         this.opMode.sleep(1000);
                         this.wobbleArm.upperClasp.setPosition(0);
                         this.wobbleArm.lowerClasp.setPosition(1);
+                        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,-2,-2,-2,-2,0, 0 );
                         this.debugTelemetery("Get back to origin", true);
                         this.debugTelemetery("strafe back");
                         this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,STRAFE_TO_DEPOSIT,0);
@@ -250,6 +309,19 @@ public class FullBase extends robotBase {
 //                }
         }
     }
+    public boolean getCurrentRPM(double initTime, double currentTime, int initPos, int currentPos ){
+        double differenceInTime = currentTime - initTime;
+        if(differenceInTime > 1){
+         int differenceInPos = currentPos - initPos;
+         double revolutions = differenceInPos / 28;
+         double minutes = differenceInTime / 60;
+         rpm = revolutions / minutes;
+        }
+        this.telemetry.addLine("Current RPM: " + rpm);
+        if(differenceInTime > 1) return true;
+        return false;
+    }
+
     public void raiseWobbleArm(){
         this.wobbleArm.wobbleArm.setPower(this.wobbleArm.REVERSE_POWER);
         this.wobbleArm.lowerClasp.setPosition(0);
@@ -259,6 +331,44 @@ public class FullBase extends robotBase {
 
 
     }
+    public void hitBackWall(){
+        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,-30,30, 30, -30, 0);
+        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,180);
+        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,60,60,60, 60,180,0);
+        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED, -27,27,27,-27,0);
+        this.wobbleArm.rcClasp.setPosition(1);
+        this.drivetrain.encoderDriveWO(this.drivetrain.DRIVE_SPEED,0,-100,-100,0,0);
+        //this.encoderDrive(DRIVE_SPEED,  0,60,0,60,0);
+    }
+    public void ParkWith2WG(Drivetrain.NUM_OF_RINGS numOfRings){
+        final double STRAFE_TO_LINE;
+        final double DRIVE_TO_LINE;
+        switch (numOfRings){
+            case FOUR:
+                STRAFE_TO_LINE = 6.0;
+                DRIVE_TO_LINE = 15.0;
+//                this.encoderDrive(DRIVE_SPEED,STRAFE_TO_LINE,STRAFE_TO_LINE,STRAFE_TO_LINE, STRAFE_TO_LINE,0);
+                this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,180,0);
+                break;
+            case ONE:
+                STRAFE_TO_LINE = 6.0;
+                DRIVE_TO_LINE = 10.0;
+//                this.encoderDrive(DRIVE_SPEED,STRAFE_TO_LINE,STRAFE_TO_LINE,STRAFE_TO_LINE, STRAFE_TO_LINE,0);
+                this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,180,0);
+                break;
+
+            case ZERO:
+                this.wobbleArm.rcClasp.setPosition(0.5);
+                STRAFE_TO_LINE = 6.0;
+                DRIVE_TO_LINE = 6.0;
+//                this.encoderDrive(DRIVE_SPEED,STRAFE_TO_LINE,STRAFE_TO_LINE,STRAFE_TO_LINE, STRAFE_TO_LINE,0);
+                this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,180,0);
+                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,10,-10,-10,10,0);
+                this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,10,10,10,10,180,0);
+                break;
+        }
+    }
+
     /**
      * @param timeInMs
      * */

@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.FullBase;
 import org.firstinspires.ftc.teamcode.RingDetector;
 import org.firstinspires.ftc.teamcode.UltimateGoalComponents.Drivetrain;
 
-@Autonomous(name="BlueAuto")
-public class BlueLeftAuto extends LinearOpMode {
+@Autonomous(name="BlueAutoWithPowerShoots")
+public class BlueLeftAutoWithPowerShoots extends LinearOpMode {
 
         private ElapsedTime runtime = new ElapsedTime();
         FullBase Base ;
@@ -35,7 +35,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
                     Base.raiseWobbleArm();
-                    Base.shootShots();
+                    Base.shootPowerShots();
                     Base.debugWait();
                     Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ONE);
                     break;
@@ -56,7 +56,7 @@ public class BlueLeftAuto extends LinearOpMode {
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
                     Base.raiseWobbleArm();
-                    Base.shootShots();
+                    Base.shootPowerShots();
                     Base.debugWait();
                     //Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);
                     Base.debugWait();
@@ -75,12 +75,13 @@ public class BlueLeftAuto extends LinearOpMode {
 //                    Base.shootPowerShots();
                     Base.debugTelemetery("Shoot Shots");
                     Base.raiseWobbleArm();
-                    Base.shootShotsinCaseZero();
+                    Base.shootPowerShots();
                     Base.debugWait();
 //                    Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.SECOND);
 //                    Base.debugWait();
                     Base.debugTelemetery("Park");
-                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ZERO);
+                    //Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ZERO);
+                    Base.drivetrain.gyroTurn(.7,0);
                     break;
 
             }

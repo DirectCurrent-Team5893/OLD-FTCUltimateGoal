@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.internal.RobotComponent;
 import org.firstinspires.ftc.robotcontroller.internal.robotBase;
-/*
+/**
 @author Yahya ElGawady
  */
 public class Shooter extends RobotComponent {
@@ -32,21 +32,9 @@ public class Shooter extends RobotComponent {
 
 
     public void getToTargetSpeed(int target_rpm){
-//        double percentOfTotal = (double)(target_rpm)/6000;
+        double percentOfTotal = (double)(target_rpm)/((double)5100);
        ShooterWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        ShooterWheel.setPower(percentOfTotal);
-      if(target_rpm>5900)
-      {
-          ShooterWheel.setPower(1.0);
-      } else if(target_rpm == 5900)
-      {
-          ShooterWheel.setPower(.9);
-      }
-      else if(target_rpm == 4900){
-            ShooterWheel.setPower(.816);
-        } else if (target_rpm == 5100){
-          ShooterWheel.setPower(0.85);
-      }
+        ShooterWheel.setPower(percentOfTotal);
     }
 
     public void getToTargetSpeed(double target_speed) {

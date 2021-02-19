@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.robotcontroller.internal;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -44,6 +45,19 @@ public class HardwareMapper {
         tempGyro = base.getHardwaremap().gyroSensor.get(NAME);
 
         return tempGyro;
+    }
+    public ModernRoboticsI2cRangeSensor mapMRRange(final String NAME){
+        ModernRoboticsI2cRangeSensor tempRange;
+
+        tempRange = base.getHardwaremap().get(ModernRoboticsI2cRangeSensor.class, NAME);
+        tempRange.initialize();
+
+        try {
+            tempRange = base.getHardwaremap().get(ModernRoboticsI2cRangeSensor.class, NAME);
+        }
+        catch(Exception e){
+        }
+        return tempRange;
     }
 
 

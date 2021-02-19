@@ -67,7 +67,7 @@ public class RingDetector {
         boolean bottomRing = false;
         if (boxValue < 50) {
             return 4;
-        } else if (boxValue < 130){
+        } else if (boxValue < 125){
             return 1;
         } else{
             return 0;

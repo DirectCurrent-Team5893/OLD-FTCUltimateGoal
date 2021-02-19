@@ -9,12 +9,26 @@ import org.firstinspires.ftc.teamcode.FullBase;
 @TeleOp(name = "Main TeleOp", group = "Linear Opmode")
 public class MainTeleOp extends LinearOpMode {
 
-    private ElapsedTime     runtime = new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime();
     FullBase Base ;
-    boolean flickerPositon =true;
-    int speed = 8000;
+
+
+    int speedArray[] = {3570, 3910, 4165, 4335, 4675, 5015, 5100};
+    int arrayCounter = 3;
+    int arrayMax = 6;
+    int speed = speedArray[arrayCounter];
+
     boolean dpadUpHeld = false;
     boolean dpadDownHeld = false;
+    boolean gamepad1XHeld = false;
+    boolean gamepad1YHeld = false;
+
+    boolean flickerPositon =true;
+    boolean firstTime = true;
+    boolean slowMode = false;
+    double initTime;
+    int initPos;
+
     @Override
     public void runOpMode() {
         Base = new FullBase(telemetry,this, hardwareMap, true);
@@ -27,7 +41,7 @@ public class MainTeleOp extends LinearOpMode {
             double forward = -gamepad1.left_stick_y;
             double right = gamepad1.left_stick_x;
             double turn = gamepad1.right_stick_x;
-            Base.drivetrain.drive(forward,right,turn);
+            Base.drivetrain.drive(forward, right, turn, slowMode);
 
             Base.hopper.moveHopperInTeleop(gamepad2.a);
 
@@ -39,18 +53,32 @@ public class MainTeleOp extends LinearOpMode {
             Base.intake.spit(gamepad1.left_trigger,Math.abs(gamepad1.right_trigger)>.1);
             if(gamepad2.right_bumper) Base.shooter.getToTargetSpeed(speed);
             //Base.shooter.shoot(gamepad1.x);
-            if(gamepad2.dpad_up && !dpadUpHeld){ speed = 6100; dpadUpHeld = true;}
+            if(gamepad2.dpad_up && !dpadUpHeld){ if(arrayCounter < arrayMax){speed = speedArray[++arrayCounter];} dpadUpHeld = true;}
             if(!gamepad2.dpad_up) dpadUpHeld = false;
-            if(gamepad2.dpad_down && !dpadDownHeld){ speed = 5900; dpadDownHeld = true;}
+            if(gamepad2.dpad_down && !dpadDownHeld){ if(arrayCounter > 0) {speed= speedArray[--arrayCounter];} dpadDownHeld = true;}
             if(!gamepad2.dpad_down) dpadDownHeld = false;
-            if(gamepad1.dpad_right){Base.wobbleArm.wobbleArm.setPower(.2);}
-            else if(gamepad1.dpad_left){Base.wobbleArm.wobbleArm.setPower(-.2);}
+//            if(gamepad1.x && !gamepad1XHeld)/*{Base.shootPowerShots();  */		throw new RuntimeException("You Broke IT");
+//                gamepad1XHeld = true;}
+            if(!gamepad1.x) gamepad1XHeld = false;
+            if(gamepad1.y && !gamepad1YHeld){ slowMode = !slowMode;  gamepad1YHeld = true;}
+            if(!gamepad1.y) gamepad1YHeld = false;
+            if(gamepad1.dpad_right){Base.wobbleArm.wobbleArm.setPower(1);}
+            else if(gamepad1.dpad_left){Base.wobbleArm.wobbleArm.setPower(-.5);}
             else {Base.wobbleArm.wobbleArm.setPower(0);}
             Base.wobbleArm.moveClaspInTeleop(gamepad1.left_bumper);
 
+            if(firstTime || Base.getCurrentRPM(initTime, this.time, initPos, Base.shooter.ShooterWheel.getCurrentPosition()))
+            {
+                initTime = this.time;
+                initPos = Base.shooter.ShooterWheel.getCurrentPosition();
+                firstTime = false;
 
+            }
             Base.getTelemetry().addLine("Speed: " + speed);
             Base.getTelemetry().addData("Shooter Encoders:",Base.shooter.ShooterWheel.getCurrentPosition());
+            Base.getTelemetry().addData("Angle: ", Base.drivetrain.gyroSensor.getHeading());
+//            Base.getTelemetry().addData("Distance:", Base.drivetrain.distance(DistanceUnit.INCH));
+//            Base.getTelemetry().addData("Edited Distance: ", Base.drivetrain.customDistanceInInches());
             Base.getTelemetry().update();
             Base.shooter.stop(gamepad2.left_bumper);
         }

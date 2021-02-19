@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.FullBase;
 import org.firstinspires.ftc.teamcode.RingDetector;
 import org.firstinspires.ftc.teamcode.UltimateGoalComponents.Drivetrain;
 
-@Autonomous(name="BlueAuto")
-public class BlueLeftAuto extends LinearOpMode {
+@Autonomous(name="BlueLeftAutoW2WB")
+public class BlueLeftAutoW2WB extends LinearOpMode {
 
         private ElapsedTime runtime = new ElapsedTime();
         FullBase Base ;
@@ -76,11 +76,13 @@ public class BlueLeftAuto extends LinearOpMode {
                     Base.debugTelemetery("Shoot Shots");
                     Base.raiseWobbleArm();
                     Base.shootShotsinCaseZero();
+                    Base.shooter.ShooterWheel.setPower(0);
                     Base.debugWait();
 //                    Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.SECOND);
 //                    Base.debugWait();
+                    Base.hitBackWall();
                     Base.debugTelemetery("Park");
-                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ZERO);
+                    Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.ZERO);
                     break;
 
             }

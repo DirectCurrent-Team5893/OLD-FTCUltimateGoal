@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.UltimateGoalComponents;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcontroller.internal.RobotComponent;
 import org.firstinspires.ftc.robotcontroller.internal.robotBase;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,7 @@ public class Drivetrain extends RobotComponent {
         public DcMotor[] motors = new DcMotor[4];
 
         public GyroSensor gyroSensor;
+        public ModernRoboticsI2cRangeSensor frontRange = null;
 
     private double stopBuffer = 0.05;
     public double amountError = 0.64;
@@ -43,12 +46,12 @@ public class Drivetrain extends RobotComponent {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    public static final double DRIVE_SPEED = 0.5;     // Nominal speed for better accuracy.
+    public static final double DRIVE_SPEED = 0.65;     // Nominal speed for better accuracy.
     public static final double TURN_SPEED = 0.5;     // Nominal half speed for better accuracy.
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
     static final double P_TURN_COEFF = 0.1;     // Larger is more responsive, but also less stable
-    static final double P_DRIVE_COEFF = 0.10;     // Larger is more responsive, but also less stable
+    static final double P_DRIVE_COEFF = 0.07;     // Larger is more responsive, but also less stable
 
 
 
@@ -57,6 +60,7 @@ public class Drivetrain extends RobotComponent {
         initMotors();
         try {
             initGyro();
+           // initRange();
         }
         catch (RuntimeException ex){
             base.getTelemetry().addLine("Error with Gyro init");
@@ -88,8 +92,31 @@ public class Drivetrain extends RobotComponent {
         while(gyroSensor.isCalibrating());
          base().getTelemetry().addLine("Gyro Calibrated");
      }
+     void initRange(){
+        frontRange = base().getMapper().mapMRRange("frontRange");
+        frontRange.initialize();
+        base().getTelemetry().addLine("Range Initialized");
+     }
 
-    public void drive(double forward, double right, double turn) {
+    public double distance (final DistanceUnit UNIT)
+    {
+        double distance = frontRange.getDistance(UNIT);
+
+//        if(distance == 0){
+//            distance = -1;
+//        }
+//
+        return distance;
+    }
+
+    public double customDistanceInInches(){
+        double distance = frontRange.getDistance(DistanceUnit.INCH);
+        distance *= 0.9183;
+        distance += 0.57482;
+        return distance;
+    }
+
+    public void drive(double forward, double right, double turn, boolean slowMode) {
 
         forward = getProcessedInput(forward);
         right = getProcessedInput(right);
@@ -115,10 +142,16 @@ public class Drivetrain extends RobotComponent {
                     greatest = Math.abs(power);
                 }
             }
-            leftFrontPower /= greatest;
-            leftBackPower /= greatest;
-            rightFrontPower /= greatest;
-            rightBackPower /= greatest;
+            powers[0] = leftFrontPower / greatest;
+            powers[1] = leftBackPower / greatest;
+            powers[2] = rightFrontPower / greatest;
+            powers[3] = rightBackPower / greatest;
+
+        }
+        if(slowMode) {
+            for (int i = 0; i <= 3; i++) {
+                powers[i] /= 2;
+            }
         }
         setPowers(powers);
     }
@@ -222,7 +255,262 @@ public class Drivetrain extends RobotComponent {
             backRight.setPower(Math.abs(speed));
             // keep looping while we are still active, and BOTH motors are running.
             while (base.getOpMode().opModeIsActive() &&
-                    (frontLeft.isBusy() && frontRight.isBusy()) && (backLeft.isBusy() && backRight.isBusy()) && !goodEnough) {
+                    ((frontLeft.isBusy() && frontRight.isBusy()) && (backLeft.isBusy() && backRight.isBusy())) && !goodEnough) {
+
+
+                // adjust relative speed based on heading error.
+                error = getError(angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (frontLeftInches < 0 && frontRightInches < 0 && backLeftInches < 0 && backRightInches < 0)
+                    steer *= -1.0;
+
+                frontLeftSpeed = speed - steer;
+                backLeftSpeed = speed - steer;
+                backRightSpeed = speed + steer;
+                frontRightSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                HalfMaxOne = Math.max(Math.abs(frontLeftSpeed), Math.abs(backLeftSpeed));
+                HalfMaxTwo = Math.max(Math.abs(frontRightSpeed), Math.abs(backRightSpeed));
+                max = Math.max(Math.abs(HalfMaxOne), Math.abs(HalfMaxTwo));
+                if (max > 1.0) {
+                    frontLeftSpeed /= max;
+                    frontRightSpeed /= max;
+                    backLeftSpeed /= max;
+                    backRightSpeed /= max;
+                }
+
+                frontLeft.setPower(frontLeftSpeed);
+                frontRight.setPower(frontRightSpeed);
+                backLeft.setPower(backLeftSpeed);
+                backRight.setPower(backRightSpeed);
+
+                // Display drive status for the driver.
+                base().getTelemetry().addData("Err/St", "%5.1f/%5.1f", error, steer);
+                base().getTelemetry().addData("Target", "%7d:%7d", newBackLeftTarget, newBackRightTarget, newFrontLeftTarget, newFrontRightTarget);
+                base().getTelemetry().addData("Actual", "%7d:%7d", backLeft.getCurrentPosition(), backRight.getCurrentPosition(), frontLeft.getCurrentPosition(), frontRight.getCurrentPosition());
+                base().getTelemetry().addData("Speed", "%5.2f:%5.2f", backLeftSpeed, backRightSpeed, frontLeftSpeed, frontRightSpeed);
+                base().getTelemetry().update();
+
+                ErrorAmount = ((Math.abs(((newBackLeftTarget) - (backLeft.getCurrentPosition())))
+                        + (Math.abs(((newFrontLeftTarget) - (frontLeft.getCurrentPosition()))))
+                        + (Math.abs((newBackRightTarget) - (backRight.getCurrentPosition())))
+                        + (Math.abs(((newFrontRightTarget) - (frontRight.getCurrentPosition()))))) / COUNTS_PER_INCH);
+                if (ErrorAmount < amountError) {
+                    goodEnough = true;
+                }
+            }
+
+            // Stop all motion;
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+    public void gyroDrive ( double speed,
+                            double frontLeftInches, double frontRightInches, double backLeftInches,
+                            double backRightInches, double frontInches
+                            ,double angle, double timeoutS){
+
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        double HalfMaxOne;
+        double HalfMaxTwo;
+
+        double max;
+
+        double error;
+        double steer;
+        double frontLeftSpeed;
+        double frontRightSpeed;
+        double backLeftSpeed;
+        double backRightSpeed;
+
+        double ErrorAmount;
+        boolean goodEnough = false;
+
+        // Ensure that the opmode is still active
+        if (base().getOpMode().opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = frontLeft.getCurrentPosition() + (int) (frontLeftInches * COUNTS_PER_INCH);
+            newFrontRightTarget = frontRight.getCurrentPosition() + (int) (frontRightInches * COUNTS_PER_INCH);
+            newBackLeftTarget = backLeft.getCurrentPosition() + (int) (backLeftInches * COUNTS_PER_INCH);
+            newBackRightTarget = backRight.getCurrentPosition() + (int) (backRightInches * COUNTS_PER_INCH);
+
+
+            // Set Target and Turn On RUN_TO_POSITION
+            frontLeft.setTargetPosition(newFrontLeftTarget);
+            frontRight.setTargetPosition(newFrontRightTarget);
+            backLeft.setTargetPosition(newBackLeftTarget);
+            backRight.setTargetPosition(newBackRightTarget);
+
+            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            frontLeft.setPower(Math.abs(speed));
+            frontRight.setPower(Math.abs(speed));
+            backLeft.setPower(Math.abs(speed));
+            backRight.setPower(Math.abs(speed));
+            // keep looping while we are still active, and BOTH motors are running.
+            while (base.getOpMode().opModeIsActive() &&
+                    ((frontLeft.isBusy() && frontRight.isBusy()) && (backLeft.isBusy() && backRight.isBusy())) && !goodEnough) {
+
+
+                // adjust relative speed based on heading error.
+                error = getError(angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (frontLeftInches < 0 && frontRightInches < 0 && backLeftInches < 0 && backRightInches < 0)
+                    steer *= -1.0;
+
+                frontLeftSpeed = speed - steer;
+                backLeftSpeed = speed - steer;
+                backRightSpeed = speed + steer;
+                frontRightSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                HalfMaxOne = Math.max(Math.abs(frontLeftSpeed), Math.abs(backLeftSpeed));
+                HalfMaxTwo = Math.max(Math.abs(frontRightSpeed), Math.abs(backRightSpeed));
+                max = Math.max(Math.abs(HalfMaxOne), Math.abs(HalfMaxTwo));
+                if (max > 1.0) {
+                    frontLeftSpeed /= max;
+                    frontRightSpeed /= max;
+                    backLeftSpeed /= max;
+                    backRightSpeed /= max;
+                }
+
+                frontLeft.setPower(frontLeftSpeed);
+                frontRight.setPower(frontRightSpeed);
+                backLeft.setPower(backLeftSpeed);
+                backRight.setPower(backRightSpeed);
+
+                // Display drive status for the driver.
+                base().getTelemetry().addData("Err/St", "%5.1f/%5.1f", error, steer);
+                base().getTelemetry().addData("Target", "%7d:%7d", newBackLeftTarget, newBackRightTarget, newFrontLeftTarget, newFrontRightTarget);
+                base().getTelemetry().addData("Actual", "%7d:%7d", backLeft.getCurrentPosition(), backRight.getCurrentPosition(), frontLeft.getCurrentPosition(), frontRight.getCurrentPosition());
+                base().getTelemetry().addData("Speed", "%5.2f:%5.2f", backLeftSpeed, backRightSpeed, frontLeftSpeed, frontRightSpeed);
+                base().getTelemetry().update();
+
+                ErrorAmount = ((Math.abs(((newBackLeftTarget) - (backLeft.getCurrentPosition())))
+                        + (Math.abs(((newFrontLeftTarget) - (frontLeft.getCurrentPosition()))))
+                        + (Math.abs((newBackRightTarget) - (backRight.getCurrentPosition())))
+                        + (Math.abs(((newFrontRightTarget) - (frontRight.getCurrentPosition()))))) / COUNTS_PER_INCH);
+                if (ErrorAmount < amountError) {
+                    goodEnough = true;
+                }
+            }
+            if(frontInches != -1) {
+                while (frontRange.getDistance(DistanceUnit.INCH) < frontInches){
+                    frontLeft.setPower(-1);
+                    frontRight.setPower(-1);
+                    backLeft.setPower(-1);
+                    backRight.setPower(-1);
+
+                    base().getTelemetry().addData("Sensor Front Distance: ", frontRange.getDistance(DistanceUnit.INCH));
+                    base().getTelemetry().addData("Target Front Distance: ", frontInches);
+                    base().getTelemetry().addLine("Moving Backwards");
+                    base().getTelemetry().update();
+                }
+                while (frontRange.getDistance(DistanceUnit.INCH) > frontInches){
+                    frontLeft.setPower(1);
+                    frontRight.setPower(1);
+                    backLeft.setPower(1);
+                    backRight.setPower(1);
+
+                    base().getTelemetry().addData("Sensor Front Distance: ", frontRange.getDistance(DistanceUnit.INCH));
+                    base().getTelemetry().addData("Target Front Distance: ", frontInches);
+                    base().getTelemetry().addLine("Moving Forwards");
+                    base().getTelemetry().update();
+                }
+            }
+
+            // Stop all motion;
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void gyroDriveForStafe ( double speed,
+                            double frontLeftInches, double frontRightInches, double backLeftInches,
+                            double backRightInches,
+                            double angle, double timeoutS){
+
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        double HalfMaxOne;
+        double HalfMaxTwo;
+
+        double max;
+
+        double error;
+        double steer;
+        double frontLeftSpeed;
+        double frontRightSpeed;
+        double backLeftSpeed;
+        double backRightSpeed;
+
+        double ErrorAmount;
+        boolean goodEnough = false;
+
+        // Ensure that the opmode is still active
+        if (base().getOpMode().opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = frontLeft.getCurrentPosition() + (int) (frontLeftInches * COUNTS_PER_INCH);
+            newFrontRightTarget = frontRight.getCurrentPosition() + (int) (frontRightInches * COUNTS_PER_INCH);
+            newBackLeftTarget = backLeft.getCurrentPosition() + (int) (backLeftInches * COUNTS_PER_INCH);
+            newBackRightTarget = backRight.getCurrentPosition() + (int) (backRightInches * COUNTS_PER_INCH);
+
+
+            // Set Target and Turn On RUN_TO_POSITION
+            frontLeft.setTargetPosition(newFrontLeftTarget);
+            frontRight.setTargetPosition(newFrontRightTarget);
+            backLeft.setTargetPosition(newBackLeftTarget);
+            backRight.setTargetPosition(newBackRightTarget);
+
+            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            frontLeft.setPower(Math.abs(speed));
+            frontRight.setPower(Math.abs(speed));
+            backLeft.setPower(Math.abs(speed));
+            backRight.setPower(Math.abs(speed));
+            // keep looping while we are still active, and BOTH motors are running.
+            while (base.getOpMode().opModeIsActive() &&
+                    ((frontLeft.isBusy() || frontRight.isBusy()) || (backLeft.isBusy() || backRight.isBusy())) || !goodEnough) {
 
 
                 // adjust relative speed based on heading error.
@@ -598,10 +886,93 @@ public class Drivetrain extends RobotComponent {
             backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
+    public void encoderDriveWO ( double speed,
+                               double frontLeftInches, double frontRightInches, double backLeftInches,
+                               double backRightInches,
+                               double timeoutS){
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        double ErrorAmount;
+        boolean goodEnough = false;
+        // Ensure that the opmode is still active
+        if (base().getOpMode().opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = frontLeft.getCurrentPosition() + (int) (frontLeftInches * COUNTS_PER_INCH);
+            newFrontRightTarget = frontRight.getCurrentPosition() + (int) (frontRightInches * COUNTS_PER_INCH);
+            newBackLeftTarget = backLeft.getCurrentPosition() + (int) (backLeftInches * COUNTS_PER_INCH);
+            newBackRightTarget = backRight.getCurrentPosition() + (int) (backRightInches * COUNTS_PER_INCH);
+            frontLeft.setTargetPosition(newFrontLeftTarget);
+            frontRight.setTargetPosition(newFrontRightTarget);
+            backLeft.setTargetPosition(newBackLeftTarget);
+            backRight.setTargetPosition(newBackRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            frontLeft.setPower(Math.abs(speed));
+            frontRight.setPower(Math.abs(speed));
+            backLeft.setPower(Math.abs(speed));
+            backRight.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (base().getOpMode().opModeIsActive() &&
+                    (frontLeft.isBusy() || frontRight.isBusy()) || (backLeft.isBusy() || backRight.isBusy()) && !goodEnough) {
+
+                // Display it for the driver.
+                base().getTelemetry().addData("Path1", "Running to %7d :%7d", newFrontLeftTarget, newBackLeftTarget, newFrontRightTarget, newBackRightTarget);
+                base().getTelemetry().addData("Path2", "Running at %7d :%7d",
+
+                        frontLeft.getCurrentPosition(),
+                        frontRight.getCurrentPosition(),
+                        backLeft.getCurrentPosition(),
+                        backRight.getCurrentPosition());
+                base().getTelemetry().addData("frontLeft", frontLeft.getCurrentPosition());
+                base().getTelemetry().addData("backLeft", backLeft.getCurrentPosition());
+                base().getTelemetry().addData("frontRight", frontRight.getCurrentPosition());
+                base().getTelemetry().addData("backright", backRight.getCurrentPosition());
+
+                base().getTelemetry().update();
+
+                ErrorAmount = ((Math.abs(((newBackLeftTarget) - (backLeft.getCurrentPosition())))
+                        + (Math.abs(((newFrontLeftTarget) - (frontLeft.getCurrentPosition()))))
+                        + (Math.abs((newBackRightTarget) - (backRight.getCurrentPosition())))
+                        + (Math.abs(((newFrontRightTarget) - (frontRight.getCurrentPosition()))))) / COUNTS_PER_INCH);
+                if (ErrorAmount < amountError) {
+                    goodEnough = true;
+                }
+            }
+
+            // Stop all motion;
+
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
 
     public void driveToFirstBox(){
         double DIST_TO_FIRST = 42;
-            this.gyroDrive(DRIVE_SPEED,DIST_TO_FIRST,DIST_TO_FIRST,DIST_TO_FIRST,DIST_TO_FIRST,STRAIGHT,0);
+            this.gyroDrive(.43,DIST_TO_FIRST,DIST_TO_FIRST,DIST_TO_FIRST,DIST_TO_FIRST,STRAIGHT,0);
 
         //checkEncoders();
     }
@@ -651,13 +1022,14 @@ public class Drivetrain extends RobotComponent {
 
             case ZERO:
                 STRAFE_TO_LINE = 6.0;
-                DRIVE_TO_LINE = 6.5;
+                DRIVE_TO_LINE = 7.5;
 //                this.encoderDrive(DRIVE_SPEED,STRAFE_TO_LINE,STRAFE_TO_LINE,STRAFE_TO_LINE, STRAFE_TO_LINE,0);
                 this.gyroDrive(DRIVE_SPEED,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,STRAIGHT,0);
                 break;
         }
-
     }
+
+
 
     public void checkEncoders(){
     while (frontRight.isBusy() || frontLeft.isBusy() || backLeft.isBusy() || backRight.isBusy()) {
@@ -667,5 +1039,12 @@ public class Drivetrain extends RobotComponent {
         base().getTelemetry().addData("BackRight:", backRight.getCurrentPosition());
         base().getTelemetry().update();
         }
+    }
+
+    public void resetEncoders(){
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
