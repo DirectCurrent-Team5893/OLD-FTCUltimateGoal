@@ -32,12 +32,16 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
                 case 1:
                     Base.drivetrain.driveToSecondBox();
                     Base.debugWait();
+                    Base.shooter.getToTargetSpeed(3750);
                     Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
                     Base.raiseWobbleArm();
                     Base.shootShots();
                     Base.debugWait();
-                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ONE);
+                    Base.hitBackWall(Drivetrain.NUM_OF_RINGS.ONE);
+                    Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.ONE);
+                  //  Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ONE);
+
                     break;
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
@@ -51,24 +55,28 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
                 case 4:
                     Base.drivetrain.driveToThirdBox();
                     Base.debugWait();
+                    Base.shooter.getToTargetSpeed(3850);
                     Base.depositWobble(FullBase.numOfRings.FOUR, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
                     Base.raiseWobbleArm();
-                    Base.shootShots();
+                    Base.shootShotsInCaseFour();
                     Base.debugWait();
+                    Base.hitBackWall(Drivetrain.NUM_OF_RINGS.FOUR);
+                    Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.FOUR);
                     //Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);
                     Base.debugWait();
-                    Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.FOUR);
+
+             //       Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.FOUR);
                     break;
 
                 case 0:
                 default:
-
                      Base.drivetrain.driveToFirstBox();
                      Base.debugWait();
-                     Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.FIRST);
+                    Base.shooter.getToTargetSpeed(3975);
+                    Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.FIRST);
                      Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
@@ -80,7 +88,7 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
                     Base.debugWait();
 //                    Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.SECOND);
 //                    Base.debugWait();
-                    Base.hitBackWall();
+                    Base.hitBackWall(Drivetrain.NUM_OF_RINGS.ZERO);
                     Base.debugTelemetery("Park");
                     Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.ZERO);
                     break;

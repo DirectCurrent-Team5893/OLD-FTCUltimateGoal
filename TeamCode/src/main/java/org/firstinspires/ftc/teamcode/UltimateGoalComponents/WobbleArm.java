@@ -18,8 +18,10 @@ public class WobbleArm extends RobotComponent {
      public final double REVERSE_POWER = .4;
 
     boolean buttonIsHeld  = false;
+    boolean otherButtonIsHeld = false;
 
     boolean positionIn = true;
+    boolean positionUp = true;
 
 
     public WobbleArm(robotBase BASE) {
@@ -74,6 +76,22 @@ public class WobbleArm extends RobotComponent {
         }
         if(!button){
             buttonIsHeld = false;
+        }
+    }
+    public void moveRCClaspInTeleop(boolean otherButton){
+
+        if(otherButton && !otherButtonIsHeld){
+            otherButtonIsHeld = true;
+            if(!positionUp){
+              rcClasp.setPosition(1);
+            }
+            else {
+              rcClasp.setPosition(0.5);
+            }
+            positionUp = !positionUp;
+        }
+        if(!otherButton){
+            otherButtonIsHeld = false;
         }
     }
 

@@ -59,35 +59,57 @@ public class FullBase extends robotBase {
         intake = new Intake (this);
         components[4] = intake;
     }
-    public void shootPowerShots(){
-        this.shooter.getToTargetSpeed(3800);
-        this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,-2,-2,-2,-2,0,0);
-        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,0);
-        this.drivetrain.resetEncoders();
-        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,10,-10,-10,10,0,0);
-        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,0,0,0,0,55.9,0,0);
-        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED, -1);
-        this.getUpToSpeed(3800);
-        this.shooter.getToTargetSpeed(3800);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(600);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(600);
-        this.shooter.getToTargetSpeed(3530);
-        this.getUpToSpeed(3530);
-//        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,12,-12,-12,12,0);
-        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED, -4);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(600);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(600);
-        this.getUpToSpeed(3530);
-//        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,12,-12,-12,12,0);
-        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED, -8);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(600);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(600);
+    public void shootPowerShots(Drivetrain.NUM_OF_RINGS numOfRings){
+        switch (numOfRings){
+            case ONE:
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED, -1);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,-2);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,-3);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+            case FOUR:
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED, -2);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,-3);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+                this.shooter.getToTargetSpeed(3700);
+                this.opMode.sleep(800);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,-3);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+            case ZERO:
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED, -3);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.opMode.sleep(600);
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,-5);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+                this.opMode.sleep(2000);
+                this.shooter.getToTargetSpeed(3800);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.opMode.sleep(600);
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,-7);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+                this.opMode.sleep(2000);
+                this.shooter.getToTargetSpeed(3700);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+                this.opMode.sleep(600);
+                this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        }
     }
 
     public void shootShots(){
@@ -112,8 +134,7 @@ public class FullBase extends robotBase {
 //        this.debugTelemetery("Turn around back to wall");
 //        this.opMode.sleep(200);
 //        this.shooter.stop();
-        this.shooter.getToTargetSpeed(4165);
-        this.opMode.sleep(3000);
+        this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED, 2);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
         this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
@@ -125,9 +146,46 @@ public class FullBase extends robotBase {
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
         this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(600);
 
     }
+    public void shootShotsInCaseFour(){
+
+//        final int TIME_TO_GO_OUT = 250;
+//        final int TIME_TO_GET_SPEED = 600;
+//        this.debugTelemetery("Get to target : Shooter");
+//        this.shooter.getToTargetSpeed(5900);
+//        this.debugTelemetery("Shoot One");
+//        this.opMode.sleep(TIME_TO_GET_SPEED);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+//        this.opMode.sleep(TIME_TO_GO_OUT);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+//        this.debugTelemetery("Shoot Two");
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+//        this.opMode.sleep(TIME_TO_GO_OUT);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+//        this.debugTelemetery("Turn 3");
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+//        this.opMode.sleep(TIME_TO_GO_OUT);
+//        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+//        this.debugTelemetery("Turn around back to wall");
+//        this.opMode.sleep(200);
+//        this.shooter.stop();
+        this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED, -2);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        this.shooter.getToTargetSpeed(3800);
+        this.opMode.sleep(800);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+
+    }
+
     public void getUpToSpeed(double targetSpeed){
         do {
             int initPos = this.shooter.ShooterWheel.getCurrentPosition();
@@ -165,21 +223,19 @@ public class FullBase extends robotBase {
 //        this.debugTelemetery("Turn around back to wall");
 //        this.opMode.sleep(200);
 //        this.shooter.stop();
-        this.shooter.getToTargetSpeed(4165);
-        this.opMode.sleep(2900);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
         this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
-        this.opMode.sleep(600);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
-        this.opMode.sleep(600);
-        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        this.shooter.getToTargetSpeed(3900);
         this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
         this.opMode.sleep(600);
         this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
+        this.shooter.getToTargetSpeed(3800);
         this.opMode.sleep(600);
-
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.IN_POSITION);
+        this.opMode.sleep(600);
+        this.hopper.setFlickerPosition(Hopper.flickerPosition.OUT_POSITION);
     }
 
     public enum wobbleNumber{
@@ -206,13 +262,13 @@ public class FullBase extends robotBase {
                         this.wobbleArm.upperClasp.setPosition(0);
                         this.wobbleArm.lowerClasp.setPosition(1);
                         this.debugTelemetery("Get back to origin", true);
-                        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,-2,-2,-2,-2,0, 0 );
+                        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,-4,-4,-4,-4,0, 0 );
                         this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,STRAFE_TO_DEPOSIT,0);
                         this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,0);
                         break;
                     case ONE:
                         STRAFE_TO_DEPOSIT = 10.0;
-                        DIST_TO_LINE = 16;
+                        DIST_TO_LINE = 18;
                         this.debugTelemetery("Line Up with box", true);
 //                        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,-STRAFE_TO_DEPOSIT,STRAFE_TO_DEPOSIT,0);
                         this.debugTelemetery("Drop Wobble Goal",true);
@@ -236,7 +292,7 @@ public class FullBase extends robotBase {
 //                        this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,this.drivetrain.BACKWARD)
                     case FOUR:
                         STRAFE_TO_DEPOSIT = 16.0;
-                        DIST_TO_LINE = 35;
+                        DIST_TO_LINE = 34;
                         this.debugTelemetery("Line Up with box", true);
                         this.debugTelemetery("Drop Wobble Goal",true);
 //                        this.wobbleArm.runToPosition(WobbleArm.POSITION.OPEN_POSITION);
@@ -331,14 +387,56 @@ public class FullBase extends robotBase {
 
 
     }
-    public void hitBackWall(){
-        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,-30,30, 30, -30, 0);
-        this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,180);
-        this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,60,60,60, 60,180,0);
-        this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED, -27,27,27,-27,0);
-        this.wobbleArm.rcClasp.setPosition(1);
-        this.drivetrain.encoderDriveWO(this.drivetrain.DRIVE_SPEED,0,-100,-100,0,0);
-        //this.encoderDrive(DRIVE_SPEED,  0,60,0,60,0);
+    public void hitBackWall(Drivetrain.NUM_OF_RINGS numOfRings){
+        switch(numOfRings){
+            case ZERO:
+                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,-4,-4,-4,-4,0,0);
+                this.drivetrain.gyroTurn(this.drivetrain.TURN_SPEED,180);
+                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,26,-26, -26, 26, 0);
+                this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,45,45,45, 45,180,0);
+                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,1,1,1,1,180,0);
+                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED, -27,27,27,-27,0);
+                this.drivetrain.gyroDrive(.2,-5,-5,-5,-5,180,0);
+                this.wobbleArm.rcClasp.setPosition(1);
+                this.opMode.sleep(500);
+//                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,-5,-5,-5,-5,180,0);
+                this.drivetrain.encoderDriveWO(this.drivetrain.DRIVE_SPEED,0,-100,-100,0,0);
+                //this.encoderDrive(DRIVE_SPEED,  0,60,0,60,0);
+            break;
+            case ONE:
+                this.drivetrain.encoderDriveWO(Drivetrain.DRIVE_SPEED,-40,0,0,-40,0);
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,180);
+                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,60,60,60,60,180,0);
+                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED, -28.5,28.5,28.5,-28.5,0);
+                this.drivetrain.gyroDrive(.2,-5,-5,-5,-5,180,0);
+                this.wobbleArm.rcClasp.setPosition(1);
+                this.opMode.sleep(500);
+                this.drivetrain.encoderDriveWO(this.drivetrain.TURN_SPEED,0,-25,-25,0,0);
+                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,-45,-45,-45,-45,180,0);
+//                this.drivetrain.encoderDriveWO(this.drivetrain.DRIVE_SPEED,0,-85,-85,0,0);
+//                this.drivetrain.encoderDriveWO(this.drivetrain.TURN_SPEED,-45,0,0,-45,0);
+//                this.drivetrain.gyroDrive(Drivetrain.TURN_SPEED,-10,-10,-10,-10,180,0);
+
+                this.wobbleArm.rcClasp.setPosition(0);
+                break;
+            case FOUR:
+                this.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,180);
+                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,24,-24, -24, 24, 0);
+                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,45,45,45,45,180,0);
+                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,1,1,1,1,180,0);
+                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED, -27,27,27,-27,0);
+                this.drivetrain.gyroDrive(.2,-5,-5,-5,-5,180,0);
+                this.wobbleArm.rcClasp.setPosition(1);
+                this.opMode.sleep(500);
+                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,-46,-46,-46,-46,180,0);
+                this.drivetrain.encoderDriveWO(Drivetrain.DRIVE_SPEED,0, -70,-70,0,0);
+//                this.drivetrain.encoderDriveWO(Drivetrain.DRIVE_SPEED,.4875,45,-60,-60,45,0);
+//                this.drivetrain.gyroDrive(Drivetrain.DRIVE_SPEED,-75,-75,-75,-75,180,0);
+                break;
+
+
+
+        }
     }
     public void ParkWith2WG(Drivetrain.NUM_OF_RINGS numOfRings){
         final double STRAFE_TO_LINE;
@@ -346,7 +444,7 @@ public class FullBase extends robotBase {
         switch (numOfRings){
             case FOUR:
                 STRAFE_TO_LINE = 6.0;
-                DRIVE_TO_LINE = 15.0;
+                DRIVE_TO_LINE = 30.0;
 //                this.encoderDrive(DRIVE_SPEED,STRAFE_TO_LINE,STRAFE_TO_LINE,STRAFE_TO_LINE, STRAFE_TO_LINE,0);
                 this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,180,0);
                 break;
@@ -363,8 +461,8 @@ public class FullBase extends robotBase {
                 DRIVE_TO_LINE = 6.0;
 //                this.encoderDrive(DRIVE_SPEED,STRAFE_TO_LINE,STRAFE_TO_LINE,STRAFE_TO_LINE, STRAFE_TO_LINE,0);
                 this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,DRIVE_TO_LINE,180,0);
-                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,10,-10,-10,10,0);
-                this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,10,10,10,10,180,0);
+                this.drivetrain.encoderDrive(this.drivetrain.DRIVE_SPEED,-15,15,15,-15,0);
+                this.drivetrain.gyroDrive(this.drivetrain.DRIVE_SPEED,-15,-15,-15,-15,180,0);
                 break;
         }
     }
