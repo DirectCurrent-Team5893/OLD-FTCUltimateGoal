@@ -1054,7 +1054,7 @@ public class Drivetrain extends RobotComponent {
     }
 
     public void driveToFirstBox(){
-        double DIST_TO_FIRST = 42;
+        double DIST_TO_FIRST = 15;
             this.gyroDrive(.43,DIST_TO_FIRST,DIST_TO_FIRST,DIST_TO_FIRST,DIST_TO_FIRST,STRAIGHT,0);
 
         //checkEncoders();
@@ -1070,10 +1070,14 @@ public class Drivetrain extends RobotComponent {
 
     public void driveToSecondBox(){
         final double DIST_TO_LINE = 60;
-        final double DIST_TO_STRAFE = 22;
-        this.encoderDrive(DRIVE_SPEED, -DIST_TO_STRAFE, DIST_TO_STRAFE, DIST_TO_STRAFE, -DIST_TO_STRAFE, 0);
-        this.gyroDrive(DRIVE_SPEED, DIST_TO_LINE, DIST_TO_LINE, DIST_TO_LINE, DIST_TO_LINE, STRAIGHT,0);
-        this.encoderDrive(DRIVE_SPEED, DIST_TO_STRAFE, -DIST_TO_STRAFE, -DIST_TO_STRAFE, DIST_TO_STRAFE, 0);
+        final double DIST_TO_STRAFE = 15;
+        this.encoderDriveWO(DRIVE_SPEED,0,45,45,0,0);
+        this.gyroDrive(DRIVE_SPEED,20,20,20, 20,0,0);
+        this.encoderDriveWO(DRIVE_SPEED,30,0,0,30,0);
+
+//        this.gyroDrive(DRIVE_SPEED, DIST_TO_LINE, DIST_TO_LINE, DIST_TO_LINE, DIST_TO_LINE, STRAIGHT,0);
+        this.gyroTurn(TURN_SPEED,0);
+//        this.encoderDrive(DRIVE_SPEED, DIST_TO_STRAFE, -DIST_TO_STRAFE, -DIST_TO_STRAFE, DIST_TO_STRAFE, 0);
         this.gyroTurn(TURN_SPEED, 0);
     }
     public void driveToThirdBox(){

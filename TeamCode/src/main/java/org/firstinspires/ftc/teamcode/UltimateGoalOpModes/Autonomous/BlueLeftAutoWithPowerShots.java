@@ -35,7 +35,7 @@ public class BlueLeftAutoWithPowerShots extends LinearOpMode {
                 Base.shooter.getToTargetSpeed(3650);
                 Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
                 Base.debugWait();
-                Base.raiseWobbleArm();
+//                Base.raiseWobbleArm();
                 Base.shootPowerShots(Drivetrain.NUM_OF_RINGS.ONE);
                 Base.debugWait();
                 Base.hitBackWall(Drivetrain.NUM_OF_RINGS.ONE);
@@ -60,7 +60,7 @@ public class BlueLeftAutoWithPowerShots extends LinearOpMode {
                 Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
-                Base.raiseWobbleArm();
+//                Base.raiseWobbleArm();
                 Base.shootPowerShots(Drivetrain.NUM_OF_RINGS.FOUR);
                 Base.debugWait();
                 Base.hitBackWall(Drivetrain.NUM_OF_RINGS.FOUR);
@@ -82,7 +82,7 @@ public class BlueLeftAutoWithPowerShots extends LinearOpMode {
 //                    debugWait();
 //                    Base.shootPowerShots();
                 Base.debugTelemetery("Shoot Shots");
-                Base.raiseWobbleArm();
+//                Base.raiseWobbleArm();
                 Base.shootPowerShots(Drivetrain.NUM_OF_RINGS.ZERO);
                 Base.shooter.ShooterWheel.setPower(0);
                 Base.debugWait();

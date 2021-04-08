@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.FullBase;
 import org.firstinspires.ftc.teamcode.RingDetector;
 import org.firstinspires.ftc.teamcode.UltimateGoalComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.UltimateGoalComponents.Intake;
 
 @Autonomous(name="BlueLeftAutoW2WB")
 public class BlueLeftAutoW2WB extends LinearOpMode {
@@ -17,26 +18,31 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
 
         @Override
         public void runOpMode() {
+
             RingDetector detector = new RingDetector(this);
             Base = new FullBase(telemetry, this, hardwareMap, false);
+
             telemetry.addData("Status", "Initialized");
             telemetry.update();
             Base.init();
             telemetry.addLine("done with init");
             waitForStart();
-            int decision = detector.getDecision();
+            int decision = detector.getDecision();;
             telemetry.addData("Decision:", decision);
             telemetry.update();
             switch (decision) {
 
                 case 1:
+                    Base.intake.setArmMode(Intake.sucMode.ACTIVE);
+                    this.sleep(1000);
                     Base.drivetrain.driveToSecondBox();
                     Base.debugWait();
-                    Base.shooter.getToTargetSpeed(3750);
+                    Base.shooter.getToTargetSpeed(3880);
                     Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
-                    Base.raiseWobbleArm();
+//                    Base.raiseWobbleArm();
                     Base.shootShots();
+                    Base.collectRing(FullBase.numOfRings.ONE);
                     Base.debugWait();
                     Base.hitBackWall(Drivetrain.NUM_OF_RINGS.ONE);
                     Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.ONE);
@@ -55,12 +61,12 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
                 case 4:
                     Base.drivetrain.driveToThirdBox();
                     Base.debugWait();
-                    Base.shooter.getToTargetSpeed(3850);
+                    Base.shooter.getToTargetSpeed(4025);
                     Base.depositWobble(FullBase.numOfRings.FOUR, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
-                    Base.raiseWobbleArm();
+//                    Base.raiseWobbleArm();
                     Base.shootShotsInCaseFour();
                     Base.debugWait();
                     Base.hitBackWall(Drivetrain.NUM_OF_RINGS.FOUR);
@@ -73,16 +79,19 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
 
                 case 0:
                 default:
-                     Base.drivetrain.driveToFirstBox();
+                    Base.intake.setArmMode(Intake.sucMode.ACTIVE);
+                    this.sleep(1000);
+                    Base.intake.intakeRight.setPower(.3);
+                    Base.drivetrain.driveToFirstBox();
                      Base.debugWait();
-                    Base.shooter.getToTargetSpeed(3975);
+                    Base.shooter.getToTargetSpeed(3850);
                     Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.FIRST);
                      Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
 //                    Base.shootPowerShots();
                     Base.debugTelemetery("Shoot Shots");
-                    Base.raiseWobbleArm();
+//                    Base.raiseWobbleArm();
                     Base.shootShotsinCaseZero();
                     Base.shooter.ShooterWheel.setPower(0);
                     Base.debugWait();

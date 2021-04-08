@@ -27,6 +27,10 @@ public class RGBColor {
         blue = b;
     }
 
+    /**
+     * Returns the value of red
+     * @return red
+     */
     public int getRed(){
         return red;
     }

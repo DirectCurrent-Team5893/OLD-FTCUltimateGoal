@@ -21,6 +21,10 @@ public class RingDetector {
     private final Point BLUE_TL    = new Point(90,110);
     private final Point BLUE_BR    = new Point(160, 160);
 
+    Scalar lowHSV = new Scalar(10, 145, 124,0);
+    Scalar highHSV = new Scalar(18, 255, 255,0);
+
+
 //    private final Point RED_TOP_TL     = new Point(0,135);
 //    private final Point RED_TOP_BR     = new Point(50, 165);
 
@@ -67,7 +71,7 @@ public class RingDetector {
         boolean bottomRing = false;
         if (boxValue < 50) {
             return 4;
-        } else if (boxValue < 140){
+        } else if (boxValue < 145){
             return 1;
         } else{
             return 0;
@@ -78,7 +82,8 @@ public class RingDetector {
 
         @Override
         public Mat processFrame(Mat input){
-
+            Mat processedInput = new Mat();
+           // Core.inRange(input, lowHSV, highHSV, processedInput);
             box = getAverageColor(input, TL, BR);
             int thickness = 3;
             //Scalar topColor = new Scalar(255,0,0);

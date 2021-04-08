@@ -32,7 +32,7 @@ public class Hopper extends RobotComponent {
     public void setHopperPosition ( Position targetPositon) {
         switch (targetPositon){
             case COLLECT_POSITION:
-                hopperMover.setPosition(.65);
+                hopperMover.setPosition(.68);
                 break;
 
             case INIT_POSITION:

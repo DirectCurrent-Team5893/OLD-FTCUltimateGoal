@@ -31,11 +31,13 @@ public class Shooter extends RobotComponent {
     }
 
 
-    public void getToTargetSpeed(int target_rpm){
-        double percentOfTotal = (double)(target_rpm)/((double)5100);
+    public double getToTargetSpeed(int target_rpm){
+        double percentOfTotal = (double)(target_rpm)/((double)5250);
        ShooterWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         ShooterWheel.setPower(percentOfTotal);
+        return percentOfTotal;
     }
+
 
     public void getToTargetSpeed(double target_speed) {
         boolean target = false;

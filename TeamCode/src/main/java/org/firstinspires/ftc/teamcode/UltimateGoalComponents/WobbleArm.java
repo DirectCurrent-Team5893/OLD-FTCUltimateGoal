@@ -9,8 +9,9 @@ import org.firstinspires.ftc.robotcontroller.internal.robotBase;
 public class WobbleArm extends RobotComponent {
     public DcMotor wobbleArm;
 
-    public Servo lowerClasp;
-    public Servo upperClasp;
+    public Servo rightWGWheel;
+    public Servo Clasp;
+    public Servo leftWGWheel;
     public Servo rcClasp;
 
 
@@ -23,6 +24,11 @@ public class WobbleArm extends RobotComponent {
     boolean positionIn = true;
     boolean positionUp = true;
 
+    wobbleGoalStates[] WGPostions = {wobbleGoalStates.WHEELS_OFF_CLASP_OUT, wobbleGoalStates.WHEELS_ON_CLASP_OUT,
+            wobbleGoalStates.WHEELS_ON_CLASP_IN, wobbleGoalStates.WHEELS_OFF_CLASP_IN};
+    int counter = 0;
+    wobbleGoalStates WGPosition = WGPostions[counter];
+
 
     public WobbleArm(robotBase BASE) {
         super(BASE);
@@ -30,8 +36,9 @@ public class WobbleArm extends RobotComponent {
     }
     void init(){
         wobbleArm = base.getMapper().mapMotor("wobbleArm");
-        upperClasp = base.getMapper().mapServo("clasp");
-        lowerClasp = base.getMapper().mapServo("lowerClasp");
+        Clasp = base.getMapper().mapServo("clasp");
+        leftWGWheel = base.getMapper().mapServo("leftWGWheel");
+        rightWGWheel = base.getMapper().mapServo("rightWGWheel");
         rcClasp = base.getMapper().mapServo("rcClasp");
     }
     public enum POSITION {OPEN_POSITION, CLOSE_POSITION}
@@ -49,30 +56,31 @@ public class WobbleArm extends RobotComponent {
     public void setClaspPosition ( Position targetPositon) {
         switch (targetPositon) {
             case OPEN_POSITION:
-                upperClasp.setPosition(.65);
+                Clasp.setPosition(.65);
                 break;
 
             case INIT_POSITION:
             case CLOSED_POSITION:
-                upperClasp.setPosition(.86);
+                Clasp.setPosition(.86);
                 break;
         }
+    }
+    public enum wobbleGoalStates {
+        WHEELS_ON_CLASP_OUT, WHEELS_OFF_CLASP_OUT, WHEELS_ON_CLASP_IN, WHEELS_OFF_CLASP_IN
     }
     public void moveClaspInTeleop(boolean button){
 
         if(button && !buttonIsHeld){
             buttonIsHeld = true;
-            if(!positionIn){
-                upperClasp.setPosition(0);
-                lowerClasp.setPosition(1);
-            }
-            else {
-                upperClasp.setPosition(1);
-                lowerClasp.setPosition(0);
+//            if(!positionIn){
+//                Clasp.setPosition(0);
+//            }
+//            else {
+//                Clasp.setPosition(1);
+//            }
+//            positionIn = !positionIn;
 
 
-            }
-            positionIn = !positionIn;
         }
         if(!button){
             buttonIsHeld = false;

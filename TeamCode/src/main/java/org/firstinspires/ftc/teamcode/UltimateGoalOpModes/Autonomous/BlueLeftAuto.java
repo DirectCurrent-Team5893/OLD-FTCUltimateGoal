@@ -34,7 +34,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     Base.debugWait();
                     Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
-                    Base.raiseWobbleArm();
+//                    Base.raiseWobbleArm();
                     Base.shootShots();
                     Base.debugWait();
                     Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.ONE);
@@ -55,7 +55,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
-                    Base.raiseWobbleArm();
+//                    Base.raiseWobbleArm();
                     Base.shootShots();
                     Base.debugWait();
                     //Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);
@@ -74,7 +74,7 @@ public class BlueLeftAuto extends LinearOpMode {
 //                    debugWait();
 //                    Base.shootPowerShots();
                     Base.debugTelemetery("Shoot Shots");
-                    Base.raiseWobbleArm();
+//                    Base.raiseWobbleArm();
                     Base.shootShotsinCaseZero();
                     Base.debugWait();
 //                    Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.SECOND);
