@@ -49,7 +49,7 @@ public class BlueLeftAuto extends LinearOpMode {
 
 
                 case 4:
-                    Base.drivetrain.driveToThirdBox();
+                    Base.driveToThirdBox();
                     Base.debugWait();
                     Base.depositWobble(FullBase.numOfRings.FOUR, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();

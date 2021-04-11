@@ -69,7 +69,7 @@ public class RingDetector {
         opMode.telemetry.update();
         boolean topRing = false;
         boolean bottomRing = false;
-        if (boxValue < 50) {
+        if (boxValue < 70) {
             return 4;
         } else if (boxValue < 145){
             return 1;

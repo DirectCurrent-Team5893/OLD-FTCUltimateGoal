@@ -35,13 +35,15 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
                 case 1:
                     Base.intake.setArmMode(Intake.sucMode.ACTIVE);
                     this.sleep(1000);
+                    Base.shooter.getToTargetSpeed(3880);
                     Base.drivetrain.driveToSecondBox();
                     Base.debugWait();
-                    Base.shooter.getToTargetSpeed(3880);
                     Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
 //                    Base.raiseWobbleArm();
                     Base.shootShots();
+                    Base.hopper.hopperMover.setPosition(.63);
+                    this.sleep(200);
                     Base.collectRing(FullBase.numOfRings.ONE);
                     Base.debugWait();
                     Base.hitBackWall(Drivetrain.NUM_OF_RINGS.ONE);
@@ -59,9 +61,11 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
 
 
                 case 4:
-                    Base.drivetrain.driveToThirdBox();
-                    Base.debugWait();
+                    Base.intake.setArmMode(Intake.sucMode.ACTIVE);
+                    this.sleep(1000);
                     Base.shooter.getToTargetSpeed(4025);
+                    Base.driveToThirdBox();
+                    Base.debugWait();
                     Base.depositWobble(FullBase.numOfRings.FOUR, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
@@ -69,6 +73,7 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
 //                    Base.raiseWobbleArm();
                     Base.shootShotsInCaseFour();
                     Base.debugWait();
+                    Base.collectRing(FullBase.numOfRings.ONE);
                     Base.hitBackWall(Drivetrain.NUM_OF_RINGS.FOUR);
                     Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.FOUR);
                     //Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);

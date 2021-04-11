@@ -54,7 +54,7 @@ public class Intake extends RobotComponent {
     }
     public void suck(double strength, boolean isSpitting){
         if(!isSpitting) {
-            intakeLeft.setPower(strength);
+            intakeLeft.setPower(0.7 * strength);
             intakeRight.setPower(-strength);
         }
     }

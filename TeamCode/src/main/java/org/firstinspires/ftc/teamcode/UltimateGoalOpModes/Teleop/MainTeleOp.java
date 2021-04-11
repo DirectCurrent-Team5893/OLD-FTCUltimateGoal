@@ -53,7 +53,7 @@ public class MainTeleOp extends LinearOpMode {
             flickerPositon = Base.hopper.moveFlicker(gamepad2.b, flickerPositon, runtime);
             if(Base.hopper.hopperMover.getPosition() != 0.86)
             {
-            Base.intake.suck(gamepad1.right_trigger * .8,Math.abs(gamepad1.left_trigger)>.1);
+            Base.intake.suck(gamepad1.right_trigger ,Math.abs(gamepad1.left_trigger)>.1);
             }
             Base.intake.spit(gamepad1.left_trigger * .8,Math.abs(gamepad1.right_trigger)>.1);
             //Turns on shooter
@@ -106,7 +106,7 @@ public class MainTeleOp extends LinearOpMode {
             Base.getTelemetry().addLine("Speed: " + speed);
             Base.getTelemetry().addLine("Target Speed: " + targetSpeedDecimal);
             Base.getTelemetry().addData("Shooter Encoders:",Base.shooter.ShooterWheel.getCurrentPosition());
-            Base.getTelemetry().addData("Angle: ", Base.drivetrain.gyroSensor.getHeading());
+            Base.getTelemetry().addData("Angle: ", Base.drivetrain.gyroSensor.getIntegratedZValue());
 //            Base.getTelemetry().addData("Distance:", Base.drivetrain.distance(DistanceUnit.INCH));
 //            Base.getTelemetry().addData("Edited Distance: ", Base.drivetrain.customDistanceInInches());
             Base.getTelemetry().update();

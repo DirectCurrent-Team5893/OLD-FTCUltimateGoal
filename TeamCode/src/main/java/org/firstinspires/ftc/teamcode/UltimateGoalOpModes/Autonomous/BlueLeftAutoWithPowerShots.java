@@ -53,7 +53,7 @@ public class BlueLeftAutoWithPowerShots extends LinearOpMode {
 
 
             case 4:
-                Base.drivetrain.driveToThirdBox();
+                Base.driveToThirdBox();
                 Base.debugWait();
                 Base.shooter.getToTargetSpeed(3750);
                 Base.depositWobble(FullBase.numOfRings.FOUR, FullBase.wobbleNumber.FIRST);
