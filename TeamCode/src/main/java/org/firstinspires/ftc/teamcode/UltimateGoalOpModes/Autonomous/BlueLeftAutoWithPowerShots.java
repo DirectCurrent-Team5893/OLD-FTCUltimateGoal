@@ -75,7 +75,7 @@ public class BlueLeftAutoWithPowerShots extends LinearOpMode {
             default:
                 Base.drivetrain.driveToFirstBox();
                 Base.debugWait();
-                Base.shooter.getToTargetSpeed(3875);
+                Base.shooter.getToTargetSpeed(3865);
                 Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.FIRST);
                 Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();

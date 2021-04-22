@@ -88,12 +88,12 @@ public class MainTeleOp extends LinearOpMode {
             if(gamepad1.y && !gamepad1YHeld){ slowMode = !slowMode;  gamepad1YHeld = true;}
             if(!gamepad1.y) gamepad1YHeld = false;
 
-//           if(gamepad1.dpad_left){Base.wobbleArm.wobbleArm.setPower(1);}
-//            else if(gamepad1.dpad_right){Base.wobbleArm.wobbleArm.setPower(-.5);}
-//            else if(gamepad2.left_stick_y < -0.1){Base.wobbleArm.wobbleArm.setPower(1);}
-//            else if(gamepad2.left_stick_y > 0.1){Base.wobbleArm.wobbleArm.setPower(-.5);}
-//            else {Base.wobbleArm.wobbleArm.setPower(0);}
-//            Base.wobbleArm.moveClaspInTeleop(gamepad1.left_bumper);
+           if(gamepad1.dpad_left){Base.wobbleArm.wobbleArm.setPower(1);}
+            else if(gamepad1.dpad_right){Base.wobbleArm.wobbleArm.setPower(-.5);}
+            else if(gamepad2.left_stick_y < -0.1){Base.wobbleArm.wobbleArm.setPower(1);}
+            else if(gamepad2.left_stick_y > 0.1){Base.wobbleArm.wobbleArm.setPower(-.5);}
+            else {Base.wobbleArm.wobbleArm.setPower(0);}
+            Base.wobbleArm.moveClaspInTeleop(gamepad1.left_bumper);
 //            Base.wobbleArm.moveRCClaspInTeleop(gamepad1.x);
 
             if(firstTime || Base.getCurrentRPM(initTime, this.time, initPos, Base.shooter.ShooterWheel.getCurrentPosition()))

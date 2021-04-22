@@ -9,10 +9,7 @@ import org.firstinspires.ftc.robotcontroller.internal.robotBase;
 public class WobbleArm extends RobotComponent {
     public DcMotor wobbleArm;
 
-    public Servo rightWGWheel;
     public Servo Clasp;
-    public Servo leftWGWheel;
-    public Servo rcClasp;
 
 
     public final double POWER = .2;
@@ -37,9 +34,6 @@ public class WobbleArm extends RobotComponent {
     void init(){
         wobbleArm = base.getMapper().mapMotor("wobbleArm");
         Clasp = base.getMapper().mapServo("clasp");
-        leftWGWheel = base.getMapper().mapServo("leftWGWheel");
-        rightWGWheel = base.getMapper().mapServo("rightWGWheel");
-        rcClasp = base.getMapper().mapServo("rcClasp");
     }
     public enum POSITION {OPEN_POSITION, CLOSE_POSITION}
 
@@ -56,12 +50,12 @@ public class WobbleArm extends RobotComponent {
     public void setClaspPosition ( Position targetPositon) {
         switch (targetPositon) {
             case OPEN_POSITION:
-                Clasp.setPosition(.65);
+                Clasp.setPosition(.6);
                 break;
 
             case INIT_POSITION:
             case CLOSED_POSITION:
-                Clasp.setPosition(.86);
+                Clasp.setPosition(1);
                 break;
         }
     }
@@ -72,13 +66,13 @@ public class WobbleArm extends RobotComponent {
 
         if(button && !buttonIsHeld){
             buttonIsHeld = true;
-//            if(!positionIn){
-//                Clasp.setPosition(0);
-//            }
-//            else {
-//                Clasp.setPosition(1);
-//            }
-//            positionIn = !positionIn;
+            if(!positionIn){
+                Clasp.setPosition(1);
+            }
+            else {
+                Clasp.setPosition(0.6);
+            }
+            positionIn = !positionIn;
 
 
         }
@@ -86,23 +80,23 @@ public class WobbleArm extends RobotComponent {
             buttonIsHeld = false;
         }
     }
-    public void moveRCClaspInTeleop(boolean otherButton){
-
-        if(otherButton && !otherButtonIsHeld){
-            otherButtonIsHeld = true;
-            if(!positionUp){
-              rcClasp.setPosition(1);
-            }
-            else {
-              rcClasp.setPosition(0.5);
-            }
-            positionUp = !positionUp;
-        }
-        if(!otherButton){
-            otherButtonIsHeld = false;
-        }
-    }
-
+//    public void moveRCClaspInTeleop(boolean otherButton){
+//
+//        if(otherButton && !otherButtonIsHeld){
+//            otherButtonIsHeld = true;
+//            if(!positionUp){
+//              rcClasp.setPosition(1);
+//            }
+//            else {
+//              rcClasp.setPosition(0.5);
+//            }
+//            positionUp = !positionUp;
+//        }
+//        if(!otherButton){
+//            otherButtonIsHeld = false;
+//        }
+//    }
+//
     @Override
     public void stop() {
         wobbleArm.setPower(0);

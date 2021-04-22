@@ -41,6 +41,7 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
                     Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.FIRST);
                     Base.debugWait();
 //                    Base.raiseWobbleArm();
+                    Base.drivetrain.gyroTurn(Drivetrain.TURN_SPEED,-1);
                     Base.shootShots();
                     Base.hopper.hopperMover.setPosition(.63);
                     this.sleep(200);
@@ -71,25 +72,28 @@ public class BlueLeftAutoW2WB extends LinearOpMode {
 //                    Base.drivetrain.lineUpWithLine();
 //                    debugWait();
 //                    Base.raiseWobbleArm();
+                    Base.intake.intakeArm.setPosition(.6);
                     Base.shootShotsInCaseFour();
-                    Base.debugWait();
-                    Base.collectRing(FullBase.numOfRings.ONE);
-                    Base.hitBackWall(Drivetrain.NUM_OF_RINGS.FOUR);
-                    Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.FOUR);
-                    //Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);
-                    Base.debugWait();
-
-             //       Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.FOUR);
+                    Base.drivetrain.ringBump();
+                    Base.lineUpWithWG();
+//                    Base.debugWait();
+//                    Base.collectRing(FullBase.numOfRings.FOUR);
+//                    Base.hitBackWall(Drivetrain.NUM_OF_RINGS.FOUR);
+//                    Base.ParkWith2WG(Drivetrain.NUM_OF_RINGS.FOUR);
+//                    //Base.depositWobble(FullBase.numOfRings.ONE, FullBase.wobbleNumber.SECOND);
+//                    Base.debugWait();
+//
+//             //       Base.drivetrain.Park(Drivetrain.NUM_OF_RINGS.FOUR);
                     break;
 
                 case 0:
                 default:
                     Base.intake.setArmMode(Intake.sucMode.ACTIVE);
                     this.sleep(1000);
-                    Base.intake.intakeRight.setPower(.3);
                     Base.drivetrain.driveToFirstBox();
                      Base.debugWait();
                     Base.shooter.getToTargetSpeed(3850);
+//                    Base.shooter.getToTargetSpeed(3925);
                     Base.depositWobble(FullBase.numOfRings.ZERO, FullBase.wobbleNumber.FIRST);
                      Base.debugWait();
 //                    Base.drivetrain.lineUpWithLine();
