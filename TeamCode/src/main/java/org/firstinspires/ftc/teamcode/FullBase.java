@@ -258,7 +258,7 @@ public class FullBase extends robotBase {
 
     public void lineUpWithWG() {
         this.drivetrain.gyroDrive(1,12,12,12,12,0,0);
-        this.drivetrain.gyroTurn(.6,0); 
+        this.drivetrain.gyroTurn(.6,0);
         this.drivetrain.encoderDriveWOWG(.8,0,-45,-45,0,0);
         this.drivetrain.gyroTurn(.6,0);
         this.drivetrain.gyroDrive(1,-22,-22,-22,-22,0,0);
